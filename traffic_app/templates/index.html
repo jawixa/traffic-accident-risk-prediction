@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Trafik Kazası Risk Tahmini</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="bg-light">
+    
+<button class="btn btn-secondary theme-toggle" id="themeBtn">🌙</button>
+
+<div class="container mt-5 shadow p-4 rounded bg-white">
+    <h2 class="text-center mb-4">🚗 Trafik Kazası Risk Tahmini</h2>
+    <p class="text-muted text-center">Aşağıdaki bilgileri doldurarak kaza riskinizi hesaplayabilirsiniz.</p>
+
+    <form action="/predict" method="POST">
+
+        <div class="row">
+
+            <!-- Saat Aralığı -->
+            <div class="col-md-4 mb-3">
+                <label data-bs-toggle="tooltip" title="Trafik yoğunluğu günün saatine göre değişir.">Saat Aralığı</label>
+                <select class="form-control w-100" name="saat_aralik" required>
+                    <option value="1">00:00 - 03:00</option>
+                    <option value="4">03:00 - 06:00</option>
+                    <option value="7">06:00 - 09:00</option>
+                    <option value="10">09:00 - 12:00</option>
+                    <option value="13">12:00 - 15:00</option>
+                    <option value="16">15:00 - 18:00</option>
+                    <option value="19">18:00 - 21:00</option>
+                    <option value="22">21:00 - 24:00</option>
+                </select>
+            </div>
+
+            <!-- Sıcaklık -->
+            <div class="col-md-4 mb-3">
+                <label data-bs-toggle="tooltip" title="Buzlanma ve aşırı sıcaklık sürüş güvenliğini etkileyebilir.">Sıcaklık (°C)</label>
+                <input type="number" name="sicaklik" class="form-control" required>
+            </div>
+
+            <!-- Görüş Mesafesi -->
+            <div class="col-md-4 mb-3">
+                <label data-bs-toggle="tooltip" title="Sisli ve yağışlı havalarda görüş mesafesi düşer ve risk artar.">Görüş Mesafesi (m)</label>
+                <input type="number" name="gorus_mesafesi" class="form-control" required>
+            </div>
+
+            <!-- Trafik Yoğunluğu -->
+            <div class="col-md-4 mb-3">
+                <label data-bs-toggle="tooltip" title="1 çok sakin, 10 aşırı yoğun trafik anlamına gelir.">Trafik Yoğunluğu (1–10)</label>
+                <select class="form-control w-100" name="trafik_yogunlugu" required>
+                    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                    <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                    <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+
+            <!-- Hız Limiti -->
+            <div class="col-md-4 mb-3">
+                <label data-bs-toggle="tooltip" title="Bulunduğunuz yolun yasal hız sınırı.">Hız Limiti</label>
+                <input type="number" name="hiz_limiti" class="form-control" required>
+            </div>
+
+            <!-- Ortalama Hız -->
+            <div class="col-md-4 mb-3">
+                <label data-bs-toggle="tooltip" title="Ortalama hızınız hız limitini aşarsa risk artar.">Ortalama Hız</label>
+                <input type="number" name="ortalama_hiz" class="form-control" required>
+            </div>
+
+            <!-- Kavşak Yoğunluğu -->
+            <div class="col-md-4 mb-3">
+                <label data-bs-toggle="tooltip" title="Kavşak sayısı arttıkça kaza riski yükselir.">Kavşak Yoğunluğu (1–10)</label>
+                <select class="form-control w-100" name="kavsak_yogunlugu" required>
+                    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                    <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                    <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                    <option value="10">10</option>
+                </select>
+            </div>
+
+            <!-- İş Çıkışı -->
+            <div class="col-md-4 mb-3">
+                <label data-bs-toggle="tooltip" title="İş çıkışı saatlerinde trafik ve stres artabilir.">İş Çıkışı?</label>
+                <select class="form-control" name="is_cikisi_saati">
+                    <option value="0">Hayır</option>
+                    <option value="1">Evet</option>
+                </select>
+            </div>
+
+            <!-- Gün Tipi -->
+            <div class="col-md-4 mb-3">
+                <label data-bs-toggle="tooltip" title="Hafta sonu trafik yoğunluğu farklılık gösterebilir.">Gün Tipi</label>
+                <select class="form-control" name="gun_tipi">
+                    <option value="hafta_ici">Hafta İçi</option>
+                    <option value="hafta_sonu">Hafta Sonu</option>
+                </select>
+            </div>
+
+            <!-- Yağış -->
+            <div class="col-md-4 mb-3">
+                <label data-bs-toggle="tooltip" title="Yağış türü yol tutuşunu etkiler.">Yağış</label>
+                <select class="form-control" name="yagis">
+                    <option value="yok">Yok</option>
+                    <option value="hafif">Hafif</option>
+                    <option value="siddetli">Şiddetli</option>
+                </select>
+            </div>
+
+            <!-- Yol Tipi -->
+            <div class="col-md-4 mb-3">
+                <label data-bs-toggle="tooltip" title="Şehir içi, otoyol ve köy yollarının risk dağılımı farklıdır.">Yol Tipi</label>
+                <select class="form-control" name="yol_tipi">
+                    <option value="sehir_ici">Şehir İçi</option>
+                    <option value="otoyol">Otoyol</option>
+                    <option value="köy_yolu">Köy Yolu</option>
+                </select>
+            </div>
+
+            <!-- Zemin Durumu -->
+            <div class="col-md-4 mb-3">
+                <label data-bs-toggle="tooltip" title="Islak veya buzlu zeminde fren mesafesi artar.">Zemin Durumu</label>
+                <select class="form-control" name="zemin_durumu">
+                    <option value="kuru">Kuru</option>
+                    <option value="islak">Islak</option>
+                    <option value="buzlu">Buzlu</option>
+                </select>
+            </div>
+
+            <!-- Işıklandırma -->
+            <div class="col-md-4 mb-3">
+                <label data-bs-toggle="tooltip" title="Karanlık veya yetersiz ışıklandırmada görünürlük azalır.">Işıklandırma</label>
+                <select class="form-control" name="isiklandirma">
+                    <option value="yeterli">Yeterli</option>
+                    <option value="yetersiz">Yetersiz</option>
+                    <option value="karanlik">Karanlık</option>
+                </select>
+            </div>
+
+        </div>
+
+        <button class="btn btn-primary w-100 mt-3">Kaza Riskini Hesapla</button>
+    </form>
+
+    <div class="text-center mt-3">
+        <a href="/history" class="btn btn-secondary">📜 Tahmin Geçmişini Gör</a>
+    </div>
+
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Bootstrap tooltip aktif etme
+    document.addEventListener("DOMContentLoaded", function () {
+        let tooltipList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+
+
+<script>
+    const body = document.body;
+    const themeBtn = document.getElementById("themeBtn");
+
+    // Sayfa açıldığında kayıtlı temayı yükle
+    if (localStorage.getItem("theme") === "dark") {
+        body.classList.add("dark-mode");
+        themeBtn.textContent = "☀️";
+    }
+
+    themeBtn.addEventListener("click", () => {
+        body.classList.toggle("dark-mode");
+
+        if (body.classList.contains("dark-mode")) {
+            localStorage.setItem("theme", "dark");
+            themeBtn.textContent = "☀️";
+        } else {
+            localStorage.setItem("theme", "light");
+            themeBtn.textContent = "🌙";
+        }
+    });
+</script>
+
+</body>
+
+</html>

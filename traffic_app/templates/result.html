@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tahmin Sonucu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<button class="btn btn-secondary theme-toggle" id="themeBtn">🌙</button>
+
+<div class="container mt-5">
+
+    <!-- Başlık -->
+    <h2 class="text-center mb-4 fw-bold">Trafik Kazası Risk Analizi Sonucu</h2>
+
+    <!-- Sonuç kartı -->
+    <div class="card shadow-lg border-0 
+        {% if risk_score >= 80 %}
+            border-danger
+        {% elif risk_score >= 55 %}
+            border-warning
+        {% else %}
+            border-success
+        {% endif %}
+    ">
+        <div class="card-body">
+
+            <!-- Risk uyarı mesajı -->
+            {% if prediction == 1 and risk_score >= 80 %}
+                <div class="alert alert-danger text-center fs-5 fw-semibold">
+                    🚨 Çok Yüksek Kaza Riski Tespit Edildi!
+                </div>
+            {% elif prediction == 1 and risk_score >= 55 %}
+                <div class="alert alert-warning text-center fs-5 fw-semibold">
+                    ⚠️ Orta Seviye Kaza Riski Mevcut.
+                </div>
+            {% else %}
+                <div class="alert alert-success text-center fs-5 fw-semibold">
+                    ✅ Düşük Kaza Riski: Koşullar genelde güvenli.
+                </div>
+            {% endif %}
+
+            <!-- Risk Skoru -->
+            <div class="p-3 bg-light border rounded mb-3">
+                <p class="mb-2 text-center">
+                    <strong>Risk Skoru:</strong> {{ risk_score }} / 100
+                </p>
+
+                <div class="progress" style="height: 30px;">
+                    <div id="riskBar"
+                        class="progress-bar 
+                            {% if risk_score >= 80 %}
+                                bg-danger
+                            {% elif risk_score >= 55 %}
+                                bg-warning
+                            {% else %}
+                                bg-success
+                            {% endif %}
+                        "
+                        role="progressbar"
+                        style="width: 0%; font-weight: bold; font-size: 14px;">
+                        0%
+                    </div>
+                </div>
+            </div>
+
+            <!-- Öneriler -->
+            <h5 class="fw-bold mt-3">📝 Güvenli Sürüş Önerileri:</h5>
+            <ul class="fs-6">
+                {% for item in suggestions %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+
+            <!-- Yeni tahmin butonu -->
+            <div class="text-center mt-4">
+                <a href="/" class="btn btn-primary btn-lg">Yeni Tahmin Yap</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div class="text-center mt-3">
+    <a href="/history" class="btn btn-secondary">Tahmin Geçmişi</a>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let risk = {{ risk_score }};
+        let bar = document.getElementById("riskBar");
+        let width = 0;
+
+        let anim = setInterval(() => {
+            if (width >= risk) {
+                clearInterval(anim);
+            } else {
+                width++;
+                bar.style.width = width + "%";
+                bar.innerHTML = width + "%";
+            }
+        }, 15); 
+    });
+</script>
+
+<script>
+    const body = document.body;
+    const themeBtn = document.getElementById("themeBtn");
+
+    // Sayfa açıldığında kayıtlı temayı yükle
+    if (localStorage.getItem("theme") === "dark") {
+        body.classList.add("dark-mode");
+        themeBtn.textContent = "☀️";
+    }
+
+    themeBtn.addEventListener("click", () => {
+        body.classList.toggle("dark-mode");
+
+        if (body.classList.contains("dark-mode")) {
+            localStorage.setItem("theme", "dark");
+            themeBtn.textContent = "☀️";
+        } else {
+            localStorage.setItem("theme", "light");
+            themeBtn.textContent = "🌙";
+        }
+    });
+</script>
+
+</body>
+
+
+</html>

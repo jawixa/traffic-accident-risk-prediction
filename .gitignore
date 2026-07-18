@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# IDE
+.idea/
+.vscode/
+
+# Database
+history.db
+*.db
+
+# Virtual Environment
+venv/
+.env
+
+# Operating System
+Thumbs.db
+.DS_Store

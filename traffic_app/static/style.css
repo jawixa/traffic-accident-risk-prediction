@@ -1,0 +1,85 @@
+body {
+    background: #0091ff;
+}
+
+.container {
+    max-width: 900px;
+}
+
+label {
+    font-weight: 600;
+}
+
+/* ---- Dark Mode Tema (Güncel) ---- */
+body.dark-mode {
+    background-color: #0f0f0f !important;
+    color: #e2e2e2 !important;
+}
+
+/* Kartlar daha koyu gri */
+body.dark-mode .card {
+    background-color: #1c1c1c !important;
+    color: #e2e2e2 !important;
+    border-color: #333 !important;
+}
+
+/* Kart içindeki başlıklar */
+body.dark-mode h2,
+body.dark-mode h5,
+body.dark-mode p,
+body.dark-mode label {
+    color: #e6e6e6 !important;
+}
+
+/* Form input ve select kutuları */
+body.dark-mode .form-control,
+body.dark-mode select {
+    background-color: #2a2a2a !important;
+    color: #f2f2f2 !important;
+    border-color: #444 !important;
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode select:focus {
+    background-color: #333 !important;
+    border-color: #777 !important;
+}
+
+/* Tablo tasarım iyileştirme */
+body.dark-mode table {
+    background-color: #1d1d1d !important;
+    color: #eaeaea !important;
+}
+
+body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #232323 !important;
+}
+
+body.dark-mode thead {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+/* Alert kutuları daha koyu */
+body.dark-mode .alert {
+    background-color: #222 !important;
+    border-color: #444 !important;
+    color: #f0f0f0 !important;
+}
+
+/* Progress bar için koyu mod iyileştirmesi */
+body.dark-mode .progress {
+    background-color: #3a3a3a !important;
+}
+
+body.dark-mode .progress-bar {
+    color: #fff !important;
+}
+
+/* Tema butonu */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 999;
+}

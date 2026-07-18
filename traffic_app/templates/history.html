@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tahmin Geçmişi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<button class="btn btn-secondary theme-toggle" id="themeBtn">🌙</button>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4 fw-bold">📜 Trafik Kazası Tahmin Geçmişi</h2>
+
+    <!-- Tüm geçmişi temizleme butonu -->
+    <div class="text-end mb-3">
+        <form method="POST" action="/clear_history" onsubmit="return confirmClear();" class="d-inline">
+            <button type="submit" class="btn btn-outline-danger">
+                🗑️ Tüm Geçmişi Temizle
+            </button>
+        </form>
+        <a href="/" class="btn btn-primary ms-2">Ana Sayfaya Dön</a>
+    </div>
+
+    <div class="card shadow-lg">
+        <div class="card-body">
+
+            <table class="table table-striped table-hover text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Zaman</th>
+                        <th>Risk Skoru</th>
+                        <th>Tahmin</th>
+                        <th>Sıcaklık</th>
+                        <th>Görüş Mesafesi</th>
+                        <th>Trafik</th>
+                        <th>Hız Limiti</th>
+                        <th>Ortalama Hız</th>
+                        <th>Kavşak Yoğunluğu</th>
+                        <th>İş Çıkışı</th>
+                        <th>Gün Tipi</th>
+                        <th>Yağış</th>
+                        <th>Yol Tipi</th>
+                        <th>Zemin</th>
+                        <th>Işıklandırma</th>
+                        <th>Saat</th>
+                        <th>Sil</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in records %}
+                        <tr>
+                            <td>{{ row[1] }}</td>
+                            <td>{{ row[2] }}%</td>
+                            <td>
+                                {% if row[3] == 1 %}
+                                    🔴 Riskli
+                                {% else %}
+                                    🟢 Güvenli
+                                {% endif %}
+                            </td>
+                            <td>{{ row[4] }}</td>
+                            <td>{{ row[5] }}</td>
+                            <td>{{ row[6] }}</td>
+                            <td>{{ row[7] }}</td>
+                            <td>{{ row[8] }}</td>
+                            <td>{{ row[9] }}</td>
+                            <td>{{ "Evet" if row[10] == 1 else "Hayır" }}</td>
+                            <td>{{ row[11] }}</td>
+                            <td>{{ row[12] }}</td>
+                            <td>{{ row[13] }}</td>
+                            <td>{{ row[14] }}</td>
+                            <td>{{ row[15] }}</td>
+                            <td>{{ row[16] }}</td>
+
+                            <!-- Tek tek silme butonu -->
+                            <td>
+                                <form method="POST" action="/delete" onsubmit="return confirmDelete();">
+                                    <input type="hidden" name="id" value="{{ row[0] }}">
+                                    <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+function confirmDelete() {
+    return confirm("Bu kaydı silmek istediğinize emin misiniz?");
+}
+
+function confirmClear() {
+    return confirm("Tüm geçmişi silmek istediğinize emin misiniz? Bu işlem geri alınamaz!");
+}
+
+function confirmDelete() {
+    return confirm("Bu kaydı silmek istediğinize emin misiniz?");
+}
+
+function confirmClear() {
+    return confirm("Tüm geçmişi silmek istediğinize emin misiniz?");
+}
+
+// Silmeden sonra sayfanın yenilenmesi için:
+document.addEventListener("submit", function(e) {
+    setTimeout(() => {
+        window.location.reload();
+    }, 300);
+});
+
+</script>
+
+<script>
+    const body = document.body;
+    const themeBtn = document.getElementById("themeBtn");
+
+    // Sayfa açıldığında kayıtlı temayı yükle
+    if (localStorage.getItem("theme") === "dark") {
+        body.classList.add("dark-mode");
+        themeBtn.textContent = "☀️";
+    }
+
+    themeBtn.addEventListener("click", () => {
+        body.classList.toggle("dark-mode");
+
+        if (body.classList.contains("dark-mode")) {
+            localStorage.setItem("theme", "dark");
+            themeBtn.textContent = "☀️";
+        } else {
+            localStorage.setItem("theme", "light");
+            themeBtn.textContent = "🌙";
+        }
+    });
+</script>
+
+</body>
+
+</html>
