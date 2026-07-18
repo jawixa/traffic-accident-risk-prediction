@@ -39,9 +39,10 @@ The project combines statistical analysis, machine learning, and a Flask-based w
 - Flask
 - HTML
 - CSS
+- Bootstrap
 
 ### Database
-- PostgreSQL
+- SQLite
 
 ---
 
