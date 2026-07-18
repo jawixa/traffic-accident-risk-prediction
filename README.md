@@ -158,7 +158,7 @@ http://127.0.0.1:5000
 Statistics and Computer Science Graduate
 
 - GitHub: https://github.com/jawixa
-- LinkedIn: *(to be added)*
+- LinkedIn: *(Atay Mert ÇALICILAR)*
 
 ---
 
